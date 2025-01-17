@@ -1,0 +1,144 @@
+<%- include('fixo/hearder') %> 
+    <div class="flex text-center items-center justify-center" >
+        <div class="w-90 p-4 shadow-lg bg-white rounded-md">          
+            <form id="cadastroForm" action="/api/bikes/addBikeDriver" method="POST" class="mt-2">
+                <p class="mb-4 text-lg">Cadastre seu usuario</p>
+                <div class="mt-4 text-justify">
+                    <label for="usuario" >Usuario</label>
+                    <input type="text" id="usuario" name="usuario" placeholder="Digite seu usuario">
+                    <p id="usuarioError" style="color: red;"></p>
+                </div>
+        
+                <div class="mt-4 text-justify">
+                    <label for="email" >Email</label>
+                    <input type="email" id="email" name="email"  placeholder="Digite seu email">
+                    <p id="emailError" style="color: red;"></p> 
+                </div>       
+                
+                <div class="mt-4 text-justify">
+                    <label for="numero" >Numero</label>
+                    <input type="number" id="numero" name="numero"  placeholder="Digite seu numero">
+                    <p id="numeroError" style="color: red;"></p> 
+                </div>
+                
+                <div class="mt-4 text-justify">
+                    <label for="matricula" >Matricula</label>
+                    <input type="text" id="matricula" name="matricula"  placeholder="Digite sua Matricula">
+                    <p id="matriculaError" style="color: red;"></p> 
+                </div>
+                
+                <div class="mt-4 text-justify">
+                    <label for="eAlugador" >Alugador</label>
+                    <input type="checkbox" class="items-center text-center" value="true" id="eAlugador" name="eAlugador" >
+                </div>
+
+                <div class="mt-4 text-justify" id="bikeQtd" style="display: none;">
+                    <label for="bikeCount">Quantas bicicletas você deseja cadastrar? </label>
+                    <br>
+                    <select id="bikeCount" name="bikeCount" class="items-center text-center mb-2" >
+                        <option value="0">Selecione...</option>
+                        <option value="1">1 bicicleta</option>
+                        <option value="2">2 bicicletas</option>
+                        <option value="3">3 bicicletas</option>
+                    </select>
+                    <p id="bikeQtdErr" style="color: red;" style="display: none;"></p> 
+                </div>               
+                
+                <div class="mt-4 text-justify" id="pix" style="display: none;">
+                    <label for="chavePix" >chave Pix</label>
+                    <input type="text" id="chavePix" name="chavePix"  placeholder="Digite seu pix" >
+                    <p id="chavePixError" style="color: red;"></p> 
+                </div>
+                
+                <div class="mt-4 text-justify">
+                    <label for="senha" >Senha</label>
+                    <input type="password" id="senha" name="senha"  placeholder="Digite sua Senha" >
+                    <p id="senhaError" style="color: red;"></p> 
+                </div>
+
+                <div class="mt-4" >
+                    <button type="submit" id="submit" class="bg-blue-500 text-white py-1 px-3 rounded-sm">Cadastrar</button>                
+                    <a type="button" class="bg-blue-500 text-white py-1 px-3 rounded-sm inline-block" href="/" class="ms-1 ">Ja tenho conta</a>                                                
+                </div>
+            </form>  
+        </div>       
+    </div> 
+
+<script>
+    const alugador = document.getElementById('eAlugador');
+    const pix = document.getElementById('pix');
+    const bikeCount = document.getElementById('bikeQtd');
+    const bikeCountSelect = document.getElementById('bikeCount'); 
+    const bikeQtdErr = document.getElementById('bikeQtdErr');
+    const eAlugador = document.getElementById('eAlugador');
+
+    alugador.addEventListener('change', function(){
+        if(this.checked){
+            pix.style.display = 'block'
+            bikeCount.style.display = 'block'
+        }else{
+            pix.style.display = 'none'
+            bikeCount.style.display = 'none'
+        }
+    })
+
+    document.getElementById('cadastroForm').addEventListener('submit', function(event){
+        event.preventDefault();
+
+        document.getElementById('usuarioError').textContent = '';
+        document.getElementById('emailError').textContent = '';
+        document.getElementById('numeroError').textContent = '';
+        document.getElementById('matriculaError').textContent = '';
+        document.getElementById('chavePixError').textContent = '';
+        document.getElementById('senhaError').textContent = '';
+        bikeQtdErr.style.display = 'none';
+        bikeQtdErr.textContent = '';
+        
+        const formData = new FormData(this);     
+        
+        fetch('/api/bikes/addBikeDriver',{
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.message){
+                window.location.href = '/';
+            } else if (data.error){
+                if (data.status === 'usuario')
+                    document.getElementById('usuarioError').textContent = data.error;
+                    
+                if (data.status === 'email')
+                    document.getElementById('emailError').textContent = data.error;      
+
+                if (data.status === 'numero')
+                    document.getElementById('numeroError').textContent = data.error;                 
+                    
+                if (data.status === 'matricula')
+                    document.getElementById('matriculaError').textContent = data.error; 
+                
+                if(data.status === 'bikeCount') {
+                    bikeQtdErr.style.display = 'block';  
+                    bikeQtdErr.textContent = data.error;                  
+                } else {
+                    bikeQtdErr.style.display = 'none'; 
+                    bikeQtdErr.textContent = "" ;
+                }   
+                if(data.status === 'bikeLimit'){
+                    bikeQtdErr.style.display = 'block';
+                    bikeQtdErr.textContent = data.error;
+                }
+
+                if (data.status === 'chavePix')
+                    document.getElementById('chavePixError').textContent = data.error;         
+
+                if (data.status === 'senha')
+                    document.getElementById('senhaError').textContent = data.error;             
+
+            }
+        })
+    })
+
+</script>
+
+<%- include('fixo/footer') %>  

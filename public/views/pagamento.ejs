@@ -1,0 +1,40 @@
+<%-include ('fixo/hearder')%>
+<div class="flex flex-col items-center">
+    <div class="bg-white shadow-lg rounded-lg w-150 p-6 space-y-6">
+        <div class="border-b-2 pb-3">
+            <h2 class="text-2xl font-semibold text-center">Pagamento</h2>
+        </div> 
+        <form action="#" method="POST" class="space-y-4">
+            <div class="w-full flex justify-between">
+                <div class="w-8/12">
+                    <label for="card-name">Nome no Cartão</label>
+                    <br>
+                    <input type="text" id="card-name" name="card-name" class="p-2 mt-1 border border-black rounded-md w-full" placeholder="Ex: João da Silva" required>
+                </div>  
+                <div class="w-4/12">
+                    <label for="expiry-date">Data de Validade</label>
+                    <br>
+                    <input type="month" id="expiry-date" name="expiry-date" class="ms-1 p-2 mt-1 border border-black rounded-md w-full" required>
+                </div>                                  
+            </div> 
+            <div class="w-full flex justify-between">                   
+                <div class="w-3/4">
+                    <label for="card-number">Número do Cartão</label>
+                    <br>
+                    <input type="text" id="card-number" name="card-number" class="p-2 mt-1 border border-black rounded-md w-full" placeholder="XXXX XXXX XXXX XXXX" required>
+                </div>        
+                <div class="w-1/4">
+                    <label for="cvv">CVV</label>
+                    <br>
+                    <input type="text" id="cvv" name="cvv" class="p-2 mt-1 border ms-1 border-black rounded-md w-full" placeholder="XXX" required>
+                </div>  
+            </div>           
+            <div class="mt-2">
+                <a href="/logout" class="bg-red-500 text-white py-1 px-3 rounded-sm inline-block">Pagar</a>  
+                <a href="/mapa" class="bg-blue-900 text-white  ms-1 py-1 px-3 rounded-sm inline-block">Voltar</a>                                         
+            </div>            
+        </form>
+    </div>
+</div>
+
+<%-include ('fixo/footer')%>

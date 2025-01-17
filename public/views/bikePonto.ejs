@@ -1,0 +1,114 @@
+<%- include('fixo/hearder')%>    
+<div class="flex flex-col text-center items-center justify-center">    
+        <div class="my-3 text-center">
+            <h2 class="text-2xl font-semibold text-white">Ponto: <% if (local == 'CT') { %> C&T <% } else if (local == 'RU_Central') { %> RU Central <% } else { %> <%= local %> <% } %></h2>
+        </div>         
+        <div class="grid grid-cols-2 gap-4">
+            <% space.forEach((spaceData, index) => { %>    
+                <div class="w-90 p-4 shadow-lg bg-white rounded-md">
+                    <p class="mt-2 text-md">Vaga N°<%= index + 1 %></p>                
+                    <img src="/images/bike.png" alt="Bike" class="h-32 w-32 mx-auto <% if (!spaceData[0] || spaceData[0] == 0) { %> opacity-50 <% } %>">
+                    <button id="pedalarButton_<%= index %>" href="/pagamento" data-bike-id="<%= spaceData[0] %>" data-local="<%= local %>" data-user-id="<%= userId %>" data-index="<%= index + 1 %>" class="bg-blue-500 text-white py-1 px-3 rounded-sm <% if (!spaceData[0] || spaceData[0] == 0) { %> disabled opacity-70 <% } %> <% if (spaceData[1] == true) { %> bg-violet-500 <% } else { %> bg-blue-500 <% } %>">
+                        Pedalar
+                    </button>
+                    
+                    <button id="estacionarButton_<%= index %>" data-local="<%= local %>" data-user-id="<%= userId %>" data-index="<%= index + 1 %>" class="bg-blue-500 text-white py-1 px-3 rounded-sm <% if (spaceData[0] && spaceData[0] > 0) { %> disabled opacity-70 <% } %>">
+                        Estacionar
+                    </button>
+                </div>    
+            <% }); %>  
+        </div> 
+    <div class="mt-2">
+        <a type="button" class="bg-red-500 text-white py-1 px-3 rounded-sm inline-block" href="/logout" class="mt-2">Sair</a>  
+        <a type="button" class="bg-blue-900 text-white py-1 px-3 rounded-sm inline-block" href="/mapa">Voltar</a>                                         
+    </div>
+</div>    
+<%- include('fixo/footer') %>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+        const pedalar = document.querySelectorAll('button[id^="pedalarButton_"]');
+        const estacionar = document.querySelectorAll('button[id^="estacionarButton_"]');
+
+        pedalar.forEach(b => {
+            b.addEventListener('click', function(){
+                const bikeId = b.getAttribute('data-bike-id');
+                const local = b.getAttribute('data-local');  
+                const userId = b.getAttribute('data-user-id');
+                const index = b.getAttribute('data-index');
+
+                if(!bikeId || !userId) return;
+
+                b.disabled = true;
+
+                fetch('/control/bikes/pedalar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json' 
+                    },
+                    body: JSON.stringify({
+                        bikeId: bikeId,
+                        local: local,
+                        userId: userId,
+                        index: index                      
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.message){
+                        alert(data.message)
+                    }
+                    if(data.error){
+                        alert(data.error)
+                    }
+                })
+                .catch(err => {
+                    console.log('Erro ao enviar a requisição: ', err)
+                })
+                .finally(()=> {
+                    b.disabled = false;
+                    location.reload();
+                })
+            })
+        })
+        estacionar.forEach(b => {
+            b.addEventListener('click', function(){
+                const local = b.getAttribute('data-local');                
+                const userId = b.getAttribute('data-user-id');
+                const index = b.getAttribute('data-index');                           
+
+                if(!index || !userId || !local) return;              
+
+                b.disabled = true;
+
+                fetch('/control/bikes/estacionar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json' 
+                    },
+                    body: JSON.stringify({
+                        local: local,
+                        userId: userId,
+                        index: index
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.message){
+                        alert(data.message)
+                    }
+                    if(data.error){
+                        alert(data.error)
+                    }
+                })
+                .catch(err => {
+                    console.log('Erro ao enviar a requisição: ', err)
+                })
+                .finally(()=> {
+                    b.disabled = false;
+                    location.reload();
+                })
+            })
+        })
+    })
+</script>

@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+    "target": "ES6",
+    "module": "CommonJS",
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+    },
+    "include": [
+        "src/**/*",
+       // "src/controllers/gerencianet.d.ts"
+    ],
+    "exclude": ["node_modules"]
+}

@@ -1,0 +1,64 @@
+<%- include('fixo/hearder') %> 
+    <div class="flex text-center items-center justify-center" >
+        <div class="w-90 p-4 shadow-lg bg-white rounded-md">          
+            <form id="login" action="/control/bikes/login" method="POST" class="mt-4">
+                <P class="text-lg">Entre com seu Usuario</P>
+                <div class="mt-4 text-justify">
+                    <label for="usuario">Usuario:</label>
+                    <input type="text" id="usuario" name="usuario" placeholder="Digite seu usuario" />
+                    <p id="usuarioError" style="color: red;"></p> 
+                </div>
+                
+                <div class="mt-4 text-justify">
+                    <label for="password">Senha:</label>
+                    <input type="password" id="senha" name="senha" placeholder="Digite sua senha"/>
+                    <p id="senhaError" style="color: red;"></p> 
+                </div>
+                <p id="loginError" style="color: red;" class="my-1"></p>                
+                <div class="mt-4" >
+                    <button  type="submit" class="bg-blue-500 text-white py-1 px-3 rounded-sm">Entrar</button>                
+                    <a type="button" class="bg-blue-500 text-white py-1 px-3 rounded-sm inline-block"  href="/cadastro" class="ms-1 ">Cadastrar</a>                                                
+                </div>
+            </form>  
+        </div>       
+    </div> 
+
+    <script>
+        document.getElementById('login').addEventListener('submit', function(event){
+            event.preventDefault();
+
+            document.getElementById('usuarioError').textContent = '';
+            document.getElementById('senhaError').textContent = '';
+            document.getElementById('loginError').textContent = '';
+
+            const formData = new FormData(this);
+
+            fetch('/control/bikes/login',{
+                method: 'POST',
+                body: new URLSearchParams(formData)
+            })
+            .then( res => res.json())
+            .then(data => {
+                if(data.message){
+                    window.location.href = '/mapa';
+                } else if (data.error){                 
+
+                    if(data.status === 'usuario')
+                        document.getElementById('usuarioError').textContent = data.error
+
+                    if(data.status === 'senha')                    
+                        document.getElementById('senhaError').textContent = data.error 
+
+                    if(data.status === 'inexiste')                    
+                        document.getElementById('loginError').textContent = data.error 
+
+                    if(data.status === 'incorreta')                    
+                        document.getElementById('loginError').textContent = data.error
+                }
+            })
+            .catch(error => {
+                loginError.textContent = 'Erro ao tentar fazer login.';
+            })
+        })
+    </script>
+<%- include('fixo/footer') %>
