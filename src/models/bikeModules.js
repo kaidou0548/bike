@@ -2,7 +2,6 @@ import express from 'express';
 import multer from 'multer';
 import sqlite3 from 'sqlite3';
 
-
 const upload = multer();
 const dbpath = './src/database/bike.db';
 const db = new sqlite3.Database(dbpath);

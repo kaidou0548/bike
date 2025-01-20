@@ -3,6 +3,7 @@ import path from 'path';
 import session from 'express-session';
 import bikeRoutes from './src/router/bikeRouter.js';
 import control from './src/controllers/bikeController.js';
+import db from './src/database/database.js';
 const router = express.Router();
 const app = express(); 
 const __dirname = path.dirname(new URL(import.meta.url).pathname).replace(/^\/(?!\/)/, '');
@@ -145,8 +146,8 @@ app.get('/mapa', async (req, res) => {
         }));
         
         res.render('mapa', { mapa: mapa });
-    } catch (error) {
-        return res.status(500).json({ error: 'Erro ao acessar os dados do usuário ou banco de dados' });
+    } catch (err) {
+        return res.status(500).json({ error: 'Erro ao acessar os dados do usuário ou banco de dados '+ ' '+ db + ' '+ err });
     }
 });
 
