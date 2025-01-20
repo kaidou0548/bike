@@ -1,8 +1,8 @@
 import path from 'path'; 
 import sqlite3 from 'sqlite3';
-const dbPath = path.dirname('database')
+const __dirname = path.dirname( new URL(import.meta.url).pathname).replace(/^\/(?!\/)/, '');
+const dbPath = path.join(__dirname,'bike.db'); 
 console.log(dbPath)
-console.log("dbPath")
 
 function createTables() {
     try {
